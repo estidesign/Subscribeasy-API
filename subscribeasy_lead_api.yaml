@@ -1,0 +1,351 @@
+# Example YAML to get you started quickly.
+# Be aware that YAML has indentation based scoping.
+# Code completion support is available so start typing for available options.
+swagger: '2.0'
+
+info:
+  version: "0.0.1"
+  title: Subscribe API
+  
+  description: |
+    ### Url  
+      
+    Access to Subscribe API is available at
+    https://subscribeasy.com/api/ or at http://subscribeasy.com/api/  
+    *HTTPS* connection is preferrable  
+    For test purposes use http://test.subscribeasy.com/api/
+    
+    
+    ### Authorizathion
+      
+    To authorize in the system you need to provide two parameters:
+    * 'store_url' URL of the website in the format https://polishtvcompany.com/
+    * 'key' Secret key. String.
+    Request above parameters from your manager.
+    
+        
+    ### REST API
+      
+    The only supported method is HTTP POST. Other methods (GET, DELETE, PUT) 
+    are not supported.
+    
+    ### Required parameters
+    
+    Every action has it's own list of required parameters. See description of 
+    specific API action.  
+    But in general all requests require following parameters: `store_url`, 
+    **key**, **action**.
+    
+    ###  Action parameter
+    **action** parameter is a key parameter for specifying what should be 
+    performed in Subscribe system.  
+    Every action value correspond to one action in the Subscribe system
+    (e.g. **lead** action create new lead in the system).
+    
+    ### Response
+    
+    Format of the response is a JSON. Response fields description:  
+      
+    **status**: Can has two possible values: 
+    * "success" means that request was successfully completed. 
+    * "fail" means that request was not compleated. For more information look 
+    at error code and message parameter in the response. 
+    
+    **message**: Contain description of the API request result or error
+    description.  
+    
+    **code**: Code of the request result. It can be an error code or success 
+    code.  
+      
+    
+
+### Security
+
+securityDefinitions:
+
+  store_url:
+    type: apiKey
+    name: store_url
+    in: query
+    
+  key:
+    type: apiKey
+    name: key
+    in: query
+    
+# Describe your paths here
+paths:
+  /api?action=lead:
+    post:
+      description: |
+        Creates a new `Lead` object.  
+        Optional query param  **referrer_email** determines the referrer person
+        who this lead will be assigned to  
+        Keep in mind than **email** parameter required only in case if 
+        **telephone** parameter is not provided. The same is actual for 
+        **telephone** parameter. If **email** is provided, **telephone** is not
+        required.
+        
+      security:
+        - key: []
+        - store_url: []
+
+      # This is array of GET operation parameters:
+      
+      parameters:
+        # An example parameter that is in query and is required
+        - name: firstname
+          in: query
+          description: Firstname of a lead. Accepts latin letters, whitespaces, 
+            dashes and apostrophes. Max length is 124 symbols.
+          required: true
+          type: string
+        - name: lastname
+          in: query
+          description: Lastname of a lead. Firstname of a lead. Accepts latin 
+            letters, whitespaces, dashes and apostrophes. Max length is 124 symbols.
+          required: true
+          type: string
+        - name: email
+          in: query
+          required: true
+          type: string
+          format: email
+        - name: telephone
+          description: From 10 to 12 digits
+          in: query
+          required: true
+          type: string
+          format: email
+        - name:  referrer_email
+          in: query
+          description: Email of a user which will be used as a lead referrer. Should be an email already registered in subscribeasy system
+          required: false
+          type: string
+          format: number
+          
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Successful response. A new lead was created
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: '119'
+              message: 
+                type: string
+                description: Lead was successfully saved
+              status: 
+                type: string
+                description: success
+                
+        400:
+          description: Validation failed. Detailed info will be provided in 
+            message property 
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: '400'
+              message: 
+                type: string
+                description: Error description / reason
+              status: 
+                type: string
+                description: fail
+        401:
+          description: Invalid credentials. Will occur in case when store_url 
+            / key is inavlid
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: '401'
+              message: 
+                type: string
+                description: Access denied for ...
+              status: 
+                type: string
+                description: fail
+        
+  /api?action=lead/{lead_email_or_phone}:
+    # This is a HTTP operation
+    post:
+      # Describe this verb here. Note: you can use markdown
+      description:  Updates a `Lead` object.  
+
+      security:
+        - key: []
+        - store_url: []
+      parameters:
+        # An example parameter that is in query and is required
+        
+        - name: lead_email_or_phone
+          in: path
+          description: Email/phone number of a lead already existing in 
+            Subscribeasy system
+          required: true
+          type: string
+        - name: firstname
+          in: query
+          description: Firstname of a lead. Accepts latin letters, whitespaces, 
+            dashes and apostrophes. Max length is 124 symbols.
+          required: false
+          type: string
+        - name: lastname
+          in: query
+          description: Lastname of a lead. Firstname of a lead. Accepts latin 
+            letters, whitespaces, dashes and apostrophes. Max length is 124 symbols.
+          required: false
+          type: string
+        - name: email
+          in: query
+          required: false
+          type: string
+          format: email
+        - name: telephone
+          description: From 10 to 12 digits
+          in: query
+          required: false
+          type: string
+          format: number
+          
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Successfull response. A `Lead` was updated
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: '119'
+              message: 
+                type: string
+                description: Lead was successfully saved
+              status: 
+                type: string
+                description: success
+                
+        400:
+          description: Validation failed. Detailed info will be provided in 
+            message property 
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: '400'
+              message: 
+                type: string
+                description: Error description / reason
+              status: 
+                type: string
+                description: fail
+        401:
+          description: Invalid credentials. Will occur in case when store_url 
+            / key is inavlid
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: '401'
+              message: 
+                type: string
+                description: Access denied for ...
+              status: 
+                type: string
+                description: fail
+        404:
+          description: "`Lead` corresponding to provided **email** / **phone number** wasn't found"
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: '404'
+              message: 
+                type: string
+                description: Provided entity ID is invalid
+              status: 
+                type: string
+                description: fail
+                
+  /api?action=leads:
+    # This is a HTTP operation
+    post:
+
+      description:  Returns list of leads related to requester store.  
+
+      security:
+        - key: []
+        - store_url: []
+        
+      responses:
+        # Response code
+        200:
+          description: Successfull response. A `Lead` was updated
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: '119'
+              message: 
+                type: string
+                description: Lead was successfully saved
+              status: 
+                type: string
+                description: success
+              leads:
+                type: array
+                items: 
+                  $ref: "#/definitions/Lead"
+        401:
+          description: Invalid credentials. Will occur in case when store_url 
+            / key is inavlid
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: '401'
+              message: 
+                type: string
+                description: Access denied for ...
+              status: 
+                type: string
+                description: fail
+  
+
+definitions:
+  Lead:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      firstname:
+        type: string
+      lastname:
+        type: string
+      email:
+        type: string
+      phone:
+        type: string
+      date_added:
+        type: string
+        format: date
