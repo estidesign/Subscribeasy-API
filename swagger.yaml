@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-# Test sync with Bitbucket
-=======
-# Test sync with Github
->>>>>>> bc6832a29d6c595d2dc501e147abc3cbd576125c
 # Subscribeasy API Documentation
 # Example YAML to get you started quickly.
 # Be aware that YAML has indentation based scoping.
@@ -335,7 +330,62 @@ paths:
               status: 
                 type: string
                 description: fail
-  
+                
+                
+  /api/?action=import:
+    # This is a HTTP operation
+    post:
+      description:  Processes payment and creates a new order and other
+        related entities.
+
+      security:
+        - key: []
+        - store_url: []
+
+      parameters:
+        - name: body
+          in: body
+          description: Please keep that this is description of all 
+            body parameters required for processing of an order
+          schema:
+            $ref: '#/definitions/OrderRequest'
+            
+      responses:
+        # Response code
+        200:
+          description: Successfull response. An `Order` was created
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: '103'
+              message:
+                type: string
+                description: Order was created successfully
+              status:
+                type: string
+                description: success
+              leads:
+                type: array
+                items:
+                  $ref: "#/definitions/Lead"
+        401:
+          description: Order was not created. See message for info
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                description: '104'
+              message:
+                type: string
+                description: "Order was not created: reason"
+              status:
+                type: string
+                description: fail
 
 definitions:
   Lead:
@@ -355,3 +405,185 @@ definitions:
       date_added:
         type: string
         format: date
+        
+  Payment:
+    description: 'Credit card payment information'
+    type: object
+    required:
+      - payment_firstname
+      - payment_lastname
+      - creditCardType
+      - creditCardNumber
+      - expDateMonth
+      - expDateYear
+      - cvv2Number
+    properties:
+      payment_firstname:
+        type: string
+      payment_lastname:
+        type: string
+      creditCardType:
+        type: string
+        enum:
+        - 'visa'
+        - 'discover'
+        - 'mastercard'
+        - 'amex'
+        description: 'Credit card type'
+      creditCardNumber:
+        type: string
+        description: "Credit card number encrypted with a public key and
+          then base 64 encoded. You can use openssl_public_encrypt and
+          base64_encode PHP functions"
+      expDateMonth:
+        type: number
+      expDateYear:
+        type: number
+      cvv2Number:
+        type: number
+
+  Product:
+    description: 'Simple representation of a product'
+    type: object
+    required:
+      - sku
+      - price
+    properties:
+      sku:
+        type: string
+      price:
+        type: number
+
+  Address:
+    type: object
+    required:
+      - firstname
+      - lastname
+      - address_1
+      - city
+      - postcode
+      - zone
+      - country
+    properties:
+      firstname:
+        type: string
+      lastname:
+        type: string
+      company:
+        description: Company name
+        type: string
+      address_1:
+        type: string
+      address_2:
+        type: string
+      city:
+        type: string
+      postcode:
+        description: zip code of an address
+        type: string
+      zone:
+        description: Full state name
+        example: Alabama
+        type: string
+      country:
+        type: string
+        description: 2 letter country code. A2 ISO standart
+
+  Customer:
+    description:
+      Customer object
+    type: object
+    required:
+      - account_firstname
+      - account_lastname
+      - email
+      - phone
+    properties:
+      account_firstname:
+        type: string
+      account_lastname:
+        type: string
+      email:
+        type: string
+      phone:
+        type: string
+      referral:
+        type: string
+        description: Referral in format Medium:SourceName.
+      addresses:
+        type: array
+        description: List of address object which are associated to a customer object
+        items:
+          $ref: "#/definitions/Address"
+
+  Order:
+    type: object
+    required:
+      - payment_company
+      - payment_address_1
+      - payment_city
+      - payment_postcode
+      - payment_zone
+      - payment_country
+      - has_shipping 
+    description: Order object
+    properties:
+      order_id:
+        type: number
+        description: Number of the order in your system
+      payment_company:
+        type: string
+      payment_address_1:
+        type: string
+      payment_address_2:
+        type: string
+      payment_city:
+        type: string
+      payment_zone:
+        type: string
+      payment_country:
+        type: string
+      payment_postcode:
+        type: string
+      has_shipping:
+        type: number
+        description: Defines if the order should be shipped. Use 0 or 1 values
+      shipping_company:
+        type: string
+      shipping_address_1:
+        type: string
+      shipping_address_2:
+        type: string
+      shipping_city:
+        type: string
+      shipping_zone:
+        type: string
+      shipping_country:
+        type: string
+      shipping_postcode:
+        type: string
+
+  OrderRequest:
+    type: object
+    properties:
+      sync_type:
+        description: "System supports 4 types of syncronisation: order,
+          customer, password, referrer.  For processing of payment and creating
+          of an order use **order** value"
+        type: string
+        enum:
+          - order
+          - customer
+          - password
+          - referrer
+      customer:
+        $ref: "#/definitions/Customer"
+      order:
+        $ref: "#/definitions/Order"
+      payment:
+        $ref: "#/definitions/Payment"
+      products:
+        description: Array of products to process in order
+        type: array
+        items:
+          $ref: "#/definitions/Product"
