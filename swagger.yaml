@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+# Test sync with Bitbucket
+=======
 # Test sync with Github
+>>>>>>> bc6832a29d6c595d2dc501e147abc3cbd576125c
 # Subscribeasy API Documentation
 # Example YAML to get you started quickly.
 # Be aware that YAML has indentation based scoping.
