@@ -368,10 +368,7 @@ paths:
               status:
                 type: string
                 description: success
-              leads:
-                type: array
-                items:
-                  $ref: "#/definitions/Lead"
+              
         401:
           description: Order was not created. See message for info
           schema:
