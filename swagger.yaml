@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: http://test.subscribeasy.com/
 
 # Subscribe API
 
@@ -7,7 +7,7 @@ HOST: http://polls.apiblueprint.org/
 
 Access to Subscribe API is available at https://subscribeasy.com/api/ or at http://subscribeasy.com/api/
 HTTPS connection is preferrable
-For test purposes use http://test.subscribeasy.com/api/Polls is a simple API allowing consumers to view polls and vote in them.
+For test purposes use http://test.subscribeasy.com/api/
 
 ## Authorization
 
