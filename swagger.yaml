@@ -1,586 +1,278 @@
-# Subscribeasy API Documentation
-# Example YAML to get you started quickly.
-# Be aware that YAML has indentation based scoping.
-# Code completion support is available so start typing for available options.
-swagger: '2.0'
+FORMAT: 1A
+HOST: http://polls.apiblueprint.org/
 
-info:
-  version: "0.0.1"
-  title: Subscribe API
-  
-  description: |
-    ### Url  
+# Subscribe API
+
+## URL
+
+Access to Subscribe API is available at https://subscribeasy.com/api/ or at http://subscribeasy.com/api/
+HTTPS connection is preferrable
+For test purposes use http://test.subscribeasy.com/api/Polls is a simple API allowing consumers to view polls and vote in them.
+
+## Authorization
+
+To authorize in the system you need to provide two parameters:
+* 'store_url' URL of the website in the format https://polishtvcompany.com/
+* 'key' Secret key. String.
+Request above parameters from your manager.
+Keep in mind that every request you make should contain this values
+
+## REST API
+
+The only supported method is HTTP POST. Other methods (GET, DELETE, PUT) are not supported.
+
+## Required parameters
+
+Every action has it's own list of required parameters. See description of specific API action.
+But in general all requests require following parameters: **store_url**, **key**, **action**.
+
+## Action parameter
+
+**action** parameter is a key parameter for specifying what should be performed in Subscribe system.
+Every action value correspond to one action in the Subscribe system (e.g. **lead** action create new lead in the system).
+
+## Response
+Format of the response is a JSON. Response fields description:
+
+**status**: Can has two possible values: 
+* "success" means that request was successfully completed. 
+* "fail" means that request was not compleated. For more information look 
+at error code and message parameter in the response. 
+
+**message**: Contain description of the API request result or error
+description.  
+
+**code**: Code of the request result. It can be an error code or success 
+code.  
       
-    Access to Subscribe API is available at
-    https://subscribeasy.com/api/ or at http://subscribeasy.com/api/  
-    *HTTPS* connection is preferrable  
-    For test purposes use http://test.subscribeasy.com/api/
+
+## Lead Collection [/api/?action=leads/]
+
+### List All Leads [POST]
+
+Creates a new `Lead` object.  
+Optional query param  **referrer_email** determines the referrer person
+who this lead will be assigned to  
+Keep in mind than **email** parameter required only in case if 
+**telephone** parameter is not provided. The same is actual for 
+**telephone** parameter. If **email** is provided, **telephone** is not
+required.
+
++ Response 200
+
+    Successful response.
+
+    + Attributes
+        + code: 109 (number)
+        + message: Lead was successfully saved (string)
+        + type: success (string)
+        + leads: (array[Lead for leads list]) - Array of leads
     
-    
-    ### Authorizathion
-      
-    To authorize in the system you need to provide two parameters:
-    * 'store_url' URL of the website in the format https://polishtvcompany.com/
-    * 'key' Secret key. String.
-    Request above parameters from your manager.
-    
++ Response 401
+
+    Invalid credentials. Will occur in case when store_url or key are inavlid
+
+    + Attributes
+        + code: 401 (number)
+        + message:  Access denied for ...
+        + status: fail (string)
         
-    ### REST API
-      
-    The only supported method is HTTP POST. Other methods (GET, DELETE, PUT) 
-    are not supported.
-    
-    ### Required parameters
-    
-    Every action has it's own list of required parameters. See description of 
-    specific API action.  
-    But in general all requests require following parameters: `store_url`, 
-    **key**, **action**.
-    
-    ###  Action parameter
-    **action** parameter is a key parameter for specifying what should be 
-    performed in Subscribe system.  
-    Every action value correspond to one action in the Subscribe system
-    (e.g. **lead** action create new lead in the system).
-    
-    ### Response
-    
-    Format of the response is a JSON. Response fields description:  
-      
-    **status**: Can has two possible values: 
-    * "success" means that request was successfully completed. 
-    * "fail" means that request was not compleated. For more information look 
-    at error code and message parameter in the response. 
-    
-    **message**: Contain description of the API request result or error
-    description.  
-    
-    **code**: Code of the request result. It can be an error code or success 
-    code.  
-      
-    
-
-### Security
-
-securityDefinitions:
-
-  store_url:
-    type: apiKey
-    name: store_url
-    in: query
-    
-  key:
-    type: apiKey
-    name: key
-    in: query
-    
-# Describe your paths here
-paths:
-  /api?action=lead:
-    post:
-      description: |
-        Creates a new `Lead` object.  
-        Optional query param  **referrer_email** determines the referrer person
-        who this lead will be assigned to  
-        Keep in mind than **email** parameter required only in case if 
-        **telephone** parameter is not provided. The same is actual for 
-        **telephone** parameter. If **email** is provided, **telephone** is not
-        required.
         
-      security:
-        - key: []
-        - store_url: []
+## Create a new lead  [/api/?action=lead]
 
-      # This is array of GET operation parameters:
-      
-      parameters:
-        # An example parameter that is in query and is required
-        - name: firstname
-          in: query
-          description: Firstname of a lead. Accepts latin letters, whitespaces, 
-            dashes and apostrophes. Max length is 124 symbols.
-          required: true
-          type: string
-        - name: lastname
-          in: query
-          description: Lastname of a lead. Firstname of a lead. Accepts latin 
-            letters, whitespaces, dashes and apostrophes. Max length is 124 symbols.
-          required: true
-          type: string
-        - name: email
-          in: query
-          required: true
-          type: string
-          format: email
-        - name: telephone
-          description: From 10 to 12 digits
-          in: query
-          required: true
-          type: string
-          format: email
-        - name:  referrer_email
-          in: query
-          description: Email of a user which will be used as a lead referrer. Should be an email already registered in subscribeasy system
-          required: false
-          type: string
-          format: number
-          
-      # Expected responses for this operation:
-      responses:
-        # Response code
-        200:
-          description: Successful response. A new lead was created
-          # A schema describing your response object.
-          # Use JSON Schema format
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: '119'
-              message: 
-                type: string
-                description: Lead was successfully saved
-              status: 
-                type: string
-                description: success
-                
-        400:
-          description: Validation failed. Detailed info will be provided in 
-            message property 
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: '400'
-              message: 
-                type: string
-                description: Error description / reason
-              status: 
-                type: string
-                description: fail
-        401:
-          description: Invalid credentials. Will occur in case when store_url 
-            / key is inavlid
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: '401'
-              message: 
-                type: string
-                description: Access denied for ...
-              status: 
-                type: string
-                description: fail
+### New lead [POST]
+
+Creates a new `Lead` object.  
+Optional query param  **referrer_email** determines the referrer person
+who this lead will be assigned to  
+Keep in mind than **email** parameter required only in case if 
+**telephone** parameter is not provided. The same is actual for 
+**telephone** parameter. If **email** is provided, **telephone** is not
+required.
+
++ Request
+
+    + Attributes (Lead for create)
+        + referrer_email: norma@jean.com - Email of a user which will be used as a lead referrer. Should be an email already registered in subscribeasy system
+
++ Response 200
+
+    Successful response.
+
+    + Attributes
+        + code: 109 (number)
+        + message: Lead was successfully saved (string)
+        + status: success (string)
         
-  /api?action=lead/{lead_email_or_phone}:
-    # This is a HTTP operation
-    post:
-      # Describe this verb here. Note: you can use markdown
-      description:  Updates a `Lead` object.  
++ Response 400
 
-      security:
-        - key: []
-        - store_url: []
-      parameters:
-        # An example parameter that is in query and is required
+    Validation failed. Detailed info will be provided in message property.
+
+    + Attributes
+        + code: 400 (number)
+        + message: Error description / reason (string)
+        + status: fail (string)
         
-        - name: lead_email_or_phone
-          in: path
-          description: Email/phone number of a lead already existing in 
-            Subscribeasy system
-          required: true
-          type: string
-        - name: firstname
-          in: query
-          description: Firstname of a lead. Accepts latin letters, whitespaces, 
-            dashes and apostrophes. Max length is 124 symbols.
-          required: false
-          type: string
-        - name: lastname
-          in: query
-          description: Lastname of a lead. Firstname of a lead. Accepts latin 
-            letters, whitespaces, dashes and apostrophes. Max length is 124 symbols.
-          required: false
-          type: string
-        - name: email
-          in: query
-          required: false
-          type: string
-          format: email
-        - name: telephone
-          description: From 10 to 12 digits
-          in: query
-          required: false
-          type: string
-          format: number
-          
-      # Expected responses for this operation:
-      responses:
-        # Response code
-        200:
-          description: Successfull response. A `Lead` was updated
-          # A schema describing your response object.
-          # Use JSON Schema format
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: '119'
-              message: 
-                type: string
-                description: Lead was successfully saved
-              status: 
-                type: string
-                description: success
-                
-        400:
-          description: Validation failed. Detailed info will be provided in 
-            message property 
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: '400'
-              message: 
-                type: string
-                description: Error description / reason
-              status: 
-                type: string
-                description: fail
-        401:
-          description: Invalid credentials. Will occur in case when store_url 
-            / key is inavlid
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: '401'
-              message: 
-                type: string
-                description: Access denied for ...
-              status: 
-                type: string
-                description: fail
-        404:
-          description: "`Lead` corresponding to provided **email** / **phone number** wasn't found"
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: '404'
-              message: 
-                type: string
-                description: Provided entity ID is invalid
-              status: 
-                type: string
-                description: fail
-                
-  /api?action=leads:
-    # This is a HTTP operation
-    post:
-
-      description:  Returns list of leads related to requester store.  
-
-      security:
-        - key: []
-        - store_url: []
         
-      responses:
-        # Response code
-        200:
-          description: Successfull response. A `Lead` was updated
-          # A schema describing your response object.
-          # Use JSON Schema format
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: '119'
-              message: 
-                type: string
-                description: Lead was successfully saved
-              status: 
-                type: string
-                description: success
-              leads:
-                type: array
-                items: 
-                  $ref: "#/definitions/Lead"
-        401:
-          description: Invalid credentials. Will occur in case when store_url 
-            / key is inavlid
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: '401'
-              message: 
-                type: string
-                description: Access denied for ...
-              status: 
-                type: string
-                description: fail
-                
-                
-  /api/?action=import:
-    # This is a HTTP operation
-    post:
-      description:  Processes payment and creates a new order and other
-        related entities.
++ Response 401
 
-      security:
-        - key: []
-        - store_url: []
+    Invalid credentials. Will occur in case when store_url or key are inavlid
 
-      parameters:
-        - name: body
-          in: body
-          description: Please keep that this is description of all 
-            body parameters required for processing of an order
-          schema:
-            $ref: '#/definitions/OrderRequest'
-            
-      responses:
-        # Response code
-        200:
-          description: Successfull response. An `Order` was created
-          # A schema describing your response object.
-          # Use JSON Schema format
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: '103'
-              message:
-                type: string
-                description: Order was created successfully
-              status:
-                type: string
-                description: success
-              
-        401:
-          description: Order was not created. See message for info
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                description: '104'
-              message:
-                type: string
-                description: "Order was not created: reason"
-              status:
-                type: string
-                description: fail
-
-definitions:
-  Lead:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int64
-      firstname:
-        type: string
-      lastname:
-        type: string
-      email:
-        type: string
-      phone:
-        type: string
-      date_added:
-        type: string
-        format: date
+    + Attributes
+        + code: 401 (number)
+        + message:  Access denied for ...
+        + status: fail (string)
         
-  Payment:
-    description: 'Credit card payment information'
-    type: object
-    required:
-      - payment_firstname
-      - payment_lastname
-      - creditCardType
-      - creditCardNumber
-      - expDateMonth
-      - expDateYear
-      - cvv2Number
-    properties:
-      payment_firstname:
-        type: string
-      payment_lastname:
-        type: string
-      creditCardType:
-        type: string
-        enum:
-        - 'visa'
-        - 'discover'
-        - 'mastercard'
-        - 'amex'
-        description: 'Credit card type'
-      creditCardNumber:
-        type: string
-        description: "Credit card number encrypted with a public key and
-          then base 64 encoded. You can use openssl_public_encrypt and
-          base64_encode PHP functions"
-      expDateMonth:
-        type: number
-      expDateYear:
-        type: number
-      cvv2Number:
-        type: number
+        
+## Update a lead  [/api/?action=lead/{lead_email_or_phone}]
 
-  Product:
-    description: 'Simple representation of a product'
-    type: object
-    required:
-      - sku
-      - price
-    properties:
-      sku:
-        type: string
-      price:
-        type: number
+### Update lead [POST]
 
-  Address:
-    type: object
-    required:
-      - firstname
-      - lastname
-      - address_1
-      - city
-      - postcode
-      - zone
-      - country
-    properties:
-      firstname:
-        type: string
-      lastname:
-        type: string
-      company:
-        description: Company name
-        type: string
-      address_1:
-        type: string
-      address_2:
-        type: string
-      city:
-        type: string
-      postcode:
-        description: zip code of an address
-        type: string
-      zone:
-        description: Full state name
-        example: Alabama
-        type: string
-      country:
-        type: string
-        description: 2 letter country code. A2 ISO standart
+Updates a `Lead` object.  
 
-  Customer:
-    description:
-      Customer object
-    type: object
-    required:
-      - account_firstname
-      - account_lastname
-      - email
-      - phone
-    properties:
-      account_firstname:
-        type: string
-      account_lastname:
-        type: string
-      email:
-        type: string
-      phone:
-        type: string
-      referral:
-        type: string
-        description: Referral in format Medium:SourceName.
-      addresses:
-        type: array
-        description: List of address object which are associated to a customer object
-        items:
-          $ref: "#/definitions/Address"
++ Parameters
 
-  Order:
-    type: object
-    required:
-      - payment_company
-      - payment_address_1
-      - payment_city
-      - payment_postcode
-      - payment_zone
-      - payment_country
-      - has_shipping 
-    description: Order object
-    properties:
-      order_id:
-        type: number
-        description: Number of the order in your system
-      payment_company:
-        type: string
-      payment_address_1:
-        type: string
-      payment_address_2:
-        type: string
-      payment_city:
-        type: string
-      payment_zone:
-        type: string
-      payment_country:
-        type: string
-      payment_postcode:
-        type: string
-      has_shipping:
-        type: number
-        description: Defines if the order should be shipped. Use 0 or 1 values
-      shipping_company:
-        type: string
-      shipping_address_1:
-        type: string
-      shipping_address_2:
-        type: string
-      shipping_city:
-        type: string
-      shipping_zone:
-        type: string
-      shipping_country:
-        type: string
-      shipping_postcode:
-        type: string
+    + `lead_email_or_phone` - Email/phone number of a lead already existing in Subscribeasy system
 
-  OrderRequest:
-    type: object
-    properties:
-      sync_type:
-        description: "System supports 4 types of syncronisation: order,
-          customer, password, referrer.  For processing of payment and creating
-          of an order use **order** value"
-        type: string
-        enum:
-          - order
-          - customer
-          - password
-          - referrer
-      customer:
-        $ref: "#/definitions/Customer"
-      order:
-        $ref: "#/definitions/Order"
-      payment:
-        $ref: "#/definitions/Payment"
-      products:
-        description: Array of products to process in order
-        type: array
-        items:
-          $ref: "#/definitions/Product"
++ Request
+
+    + Attributes (Lead)
+
++ Response 200
+
+    Successfull response. A `Lead` was updated.
+
+    + Attributes
+        + code: 119 (number)
+        + message: Lead was successfully saved (string)
+        + status: success (string)
+
++ Response 400
+
+    Validation failed. Detailed info will be provided in message property.
+
+    + Attributes
+        + code: 400 (number)
+        + message: Error description / reason (string)
+        + status: fail (string)
+        
++ Response 401
+
+    Invalid credentials. Will occur in case when store_url or key are inavlid
+
+    + Attributes
+        + code: 401 (number)
+        + message:  Access denied for ...
+        + status: fail (string)
+
++ Response 404
+
+    `Lead` corresponding to provided **email** / **phone number** wasn't found
+
+    + Attributes
+        + code: 404 (number)
+        + message: Provided entity ID is invalid
+        + status: fail (string)
+
+        
+## Import [/api/?action=import]
+
+### Process payment and create a new order [POST]
+
+Processes payment and creates a new order and other related entities.
+
++ Request
+
+    + Attributes
+        + sync_type: order (required) - System supports 4 types of syncronisation: order, customer, password, referrer.  For processing of payment and creating of an order use **order** value
+        + payment (Payment, required) - Payment (Credit card) information
+        + products (array[Product], required) - Array of products to process in order
+        + customer (Customer, required) - Customer information
+        + order (Order, required) - Order, payment and shipping information
+
++ Response 200
+
+    Successfull response. An `Order` was created
+
+    + Attributes
+        + code: 103 (number)
+        + message: Order was created successfully (string)
+        + status: success (string)
+
++ Response 401
+
+    Successfull response. An `Order` was created
+
+    + Attributes
+        + code: 104 (number)
+        + message: Order was not created: reason (string)
+        + status: fail (string)
+
+# Data Structures
+
+## Lead (object)
++ firstname: John  - Firstname of a lead. Accepts letters, whitespaces, dashes and apostrophes. Max length is 124 symbols.
++ lastname: Doe - Lastname of a lead. Accepts letters, whitespaces, dashes and apostrophes. Max length is 124 symbols.
++ email: john@doe.com 
++ telephone: 9179123000 - From 10 to 12 digits
+
+## Lead for leads list (Lead)
++ id: 1 (number) - Id of lead
++ date_added: `2015-01-01` (string) - Date of lead creation
+
+## Lead for create (Lead)
++ firstname: John (required) - Firstname of a lead. Accepts letters, whitespaces, dashes and apostrophes. Max length is 124 symbols.
++ lastname: Doe (required) - Lastname of a lead. Accepts letters, whitespaces, dashes and apostrophes. Max length is 124 symbols.
++ email: john@doe.com (required)
++ telephone: 9179123000 (required) - From 10 to 12 digits
+
+## Payment
++ payment_firstname:  Bruce (string, required) - Firstname of a cardholder
++ payment_lastname: Wayne (string, required) - Lastname of a cardholder
++ creditCardType: visa (string, required) - Can have one of the following values: visa, discover, mastercard, amex
++ creditCardNumber: `ep79WUH6AdwAjLVkWTEh/k08yk0yCfp0JoDxsQfVIE2nYMICoGDs3qkXl8ojtJp+kVJ9qj56MhoiMO5/TAuv+w==` (string, required) - Credit card number encrypted with a public key and then base 64 encoded. You can use openssl_public_encrypt and base64_encode PHP functions
++ expDateMonth: 07 (number, required) - Expiration month
++ expDateYear: 2020 (number, required) - Expiration year
++ cvv2Number: 777 (number, required) - CVV number
+
+
+## Product
++ sku: `IPTV:SERVICES:PREMIUM:PremiumMonthly` (string, required) - SKU of a product
++ price: 29.99 (number, required) - Proudct price
+
+## Address
++ firstname (required)
++ lastname (required)
++ company - Company name
++ address_1 (required)
++ address_2
++ city (required)
++ postcode (required) - Zip code of an address
++ zone: Alabama (required) - Full state name
++ country (required) -  2 letter country code. A2 ISO standart
+
+## Customer
++ account_firstname: Olivia (required)
++ account_lastname: Wilde (required)
++ email: olivia@wilde.com (required)
++ phone: 7854087499 (required)
++ referral: `Internet:google.com` - Referral in format Medium:SourceName.
++ addresses (array[Address]) - List of address object which are associated to a customer object
+
+## Order
++ order_id: 1 (number) - Number of the order in your system
++ payment_company - Name of company
++ payment_address_1: 421 W 54th St (required) - Payment address
++ payment_address_2
++ payment_city: New York (required) - Payment city
++ payment_zone: New York (required) - Full state name
++ payment_country: US (required) - 2 letter country code. A2 ISO standart
++ payment_postcode: 10019 (required) - Zip code of an address
++ has_shipping: 0 (number, required) - Defines if the order should be shipped. Use 0 or 1 values
++ shipping_company
++ shipping_address_1 - Shipping address
++ shipping_address_2 -
++ shipping_city - Shipping city
++ shipping_zone - Full state name
++ shipping_country - 2 letter country code. A2 ISO standart
++ shipping_postcode - Zip code of an address
