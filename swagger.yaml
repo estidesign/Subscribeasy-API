@@ -20,6 +20,7 @@ Keep in mind that every request you make should contain this values
 ## REST API
 
 The only supported method is HTTP POST. Other methods (GET, DELETE, PUT) are not supported.
+When making requests please make sure to use content type: **application/x-www-form-urlencoded**
 
 ## Required parameters
 
