@@ -20,7 +20,7 @@ Keep in mind that every request you make should contain this values
 ## REST API
 
 The only supported method is HTTP POST. Other methods (GET, DELETE, PUT) are not supported.
-When making requests please make sure to use content type: **application/x-www-form-urlencoded**
+When making requests please make sure to use content type **application/x-www-form-urlencoded** and url encode all request data
 
 ## Required parameters
 
@@ -235,7 +235,7 @@ Processes payment and creates a new order and other related entities.
 + payment_firstname:  Bruce (string, required) - Firstname of a cardholder
 + payment_lastname: Wayne (string, required) - Lastname of a cardholder
 + creditCardType: visa (string, required) - Can have one of the following values: visa, discover, mastercard, amex
-+ creditCardNumber: `ep79WUH6AdwAjLVkWTEh/k08yk0yCfp0JoDxsQfVIE2nYMICoGDs3qkXl8ojtJp+kVJ9qj56MhoiMO5/TAuv+w==` (string, required) - Credit card number encrypted with a public key and then base 64 encoded. You can use openssl_public_encrypt and base64_encode PHP functions
++ creditCardNumber: `E4R9gdJ4iu7f527uPqe/XJGr+AS3fEQDCe9OPTU6ek+lj8ZRcegiu2nR9P0YjyHk4rkBUdDO+ZTsFDPxlqrKig==` (string, required) - Credit card number encrypted with a public key and then base 64 encoded. You can use openssl_public_encrypt and base64_encode PHP functions. Please take in account than request should be url ecnoded.
 + expDateMonth: 07 (number, required) - Expiration month
 + expDateYear: 2020 (number, required) - Expiration year
 + cvv2Number: 777 (number, required) - CVV number
