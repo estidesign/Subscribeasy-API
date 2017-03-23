@@ -89,7 +89,9 @@ who this lead will be assigned to
 Keep in mind than **email** parameter required only in case if 
 **telephone** parameter is not provided. The same is actual for 
 **telephone** parameter. If **email** is provided, **telephone** is not
-required.
+required. The **company_name** field is required only in case if the 
+requester (API client) is not linked with any company directly and 
+therefore can link lead any existing company.
 
 + Request
 
@@ -226,6 +228,7 @@ Processes payment and creates a new order and other related entities.
 + lastname: Doe (required) - Lastname of a lead. Accepts letters, whitespaces, dashes and apostrophes. Max length is 124 symbols.
 + email: john@doe.com (required)
 + telephone: 9179123000 (required) - From 10 to 12 digits
++ company_name: polish tv company (required) - Name of the company to associate lead with. Required in case if the requester (API client) is not associated to any company. The field is case insensitive.
 
 ## Referral
 + type_id: 10 (number, required) - Id of referral type
