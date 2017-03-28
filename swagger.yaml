@@ -263,6 +263,58 @@ therefore can link lead any existing company.
         + message:  Access denied for ...
         + status: fail (string)
 
+## Check if credit card can be used for trial [/api/?action=check_credit_card_for_trial]
+
+### Credit card [POST]
+
+Checks if credit card can be used for trial.  
+The **company_name** field is required only in case if the 
+requester (API client) is not linked with any company directly and 
+therefore can link lead any existing company.
+
++ Request
+
+    + Attributes (Credit card number)
+        + service_id: 1 (required) - Id of service to check agains
+        + company_name: polish tv company (required) - Name of the company to associate lead with. Required in case if the requester (API client) is not associated to any company. The field is case insensitive.
+
++ Response 200
+
+    Successful positive response. The card wasn't used for trial.
+
+    + Attributes
+        + code: 132 (number)
+        + message: Card was not used for a trial request (string)
+        + status: success (string)
+
++ Response 200
+
+    Successful negative response. Card was used for trial
+
+    + Attributes
+        + code: 133 (number)
+        + message: Card was already used for a trial request (string)
+        + status: success (string)
+        
++ Response 400
+
+    Request validation failed. Detailed info will be provided in message property.
+
+    + Attributes
+        + code: 400 (number)
+        + message: Error description / reason (string)
+        + status: fail (string)
+        
+        
++ Response 401
+
+    Invalid credentials. Will occur in case when store_url/key are inavlid or company_name is not provided
+
+    + Attributes
+        + code: 401 (number)
+        + message:  Access denied for ...
+        + status: fail (string)
+
 # Data Structures
 
 ## Lead (object)
