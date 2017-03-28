@@ -97,7 +97,7 @@ therefore can link lead any existing company.
 
     + Attributes (Lead for create)
         + assignee_email: norma@jean.com - Email of a user which will be assigned to the lead. Should be an email already registered in subscribeasy system
-        + referral: (Referral)
+        + referral_source_token: lLE8ntTiZted - Token provided by a subscribe administrator
 + Response 200
 
     Successful response.
