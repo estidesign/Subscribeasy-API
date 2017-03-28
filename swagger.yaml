@@ -315,6 +315,52 @@ therefore can link lead any existing company.
         + message:  Access denied for ...
         + status: fail (string)
 
+## Create a trial order [/api/?action=check_credit_card_for_trial]
+
+### Trial Order Data [POST]
+
+* Creates a lead if a lead with provided email does not exist in Subscribe.
+In case if lead exists and doesn't have status 'Converted' the leads status will be set to 'In trial'
+* Creates a customer if a customer with provided email does not exist in Subscribe.
+* Creates a new trial order
+
+
++ Request
+
+    + Attributes
+        + services (array[Sku], required)
+        + customer (Customer, required) - Customer information
+        + payment (Payment, required) - Payment (Credit card) information
+        + company_name: polish tv company (required) - Name of the company to associate lead with. Required in case if the requester (API client) is not associated to any company. The field is case insensitive.
+
++ Response 200
+
+    Successful positive response. The trial was created.
+
+    + Attributes
+        + code: 113 (number)
+        + message: Trial subscription #1 was successfully created for new customer with ID #1 in order #1" (string)
+        + status: success (string)
+
++ Response 200
+
+    Negative response. The trial was not created for some reason.
+
+    + Attributes
+        + code: 112 (number)
+        + message: Trial subscription was not created
+        + status: success (string)
+        
+        
++ Response 401
+
+    Invalid credentials. Will occur in case when store_url/key are inavlid or company_name is not provided
+
+    + Attributes
+        + code: 401 (number)
+        + message:  Access denied for ...
+        + status: fail (string)
+
 # Data Structures
 
 ## Lead (object)
@@ -364,6 +410,10 @@ therefore can link lead any existing company.
 + sku: `IPTV:SERVICES:PREMIUM:PremiumMonthly` (string, required) - SKU of a product
 + price: 29.99 (number, required) - Proudct price
 
+## Sku
++ sku: `IPTV:SERVICES:PolishTV:PolishTrial` (string, required) - SKU of a product
+
+
 ## Address
 + firstname (required)
 + lastname (required)
@@ -379,7 +429,7 @@ therefore can link lead any existing company.
 + account_firstname: Olivia (required)
 + account_lastname: Wilde (required)
 + email: olivia@wilde.com (required)
-+ phone: 7854087499 (required)
++ phone: 7854087499
 + referral: `Internet:google.com` - Referral in format Medium:SourceName.
 + addresses (array[Address]) - List of address object which are associated to a customer object
 
