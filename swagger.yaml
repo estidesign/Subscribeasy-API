@@ -211,6 +211,58 @@ Processes payment and creates a new order and other related entities.
         + message: Order was not created: reason (string)
         + status: fail (string)
 
+
+## Validate a credit card  [/api/?action=validate_credit_card]
+
+### Credit card [POST]
+
+Validates a credit card data.  
+The **company_name** field is required only in case if the 
+requester (API client) is not linked with any company directly and 
+therefore can link lead any existing company.
+
++ Request
+
+    + Attributes (Credit card basics)
+        + company_name: polish tv company (required) - Name of the company to associate lead with. Required in case if the requester (API client) is not associated to any company. The field is case insensitive.
+
++ Response 200
+
+    Successful positive response. Returned when the card is valid.
+
+    + Attributes
+        + code: 130 (number)
+        + message: Card is valid (string)
+        + status: success (string)
+        
++ Response 200
+
+    Successful negative response. Takes place when provided card is not valid.
+
+    + Attributes
+        + code: 131 (number)
+        + message: Reason of validation failure (string)
+        + status: success (string)
+        
++ Response 400
+
+    Request validation failed. Detailed info will be provided in message property.
+
+    + Attributes
+        + code: 400 (number)
+        + message: Error description / reason (string)
+        + status: fail (string)
+        
+        
++ Response 401
+
+    Invalid credentials. Will occur in case when store_url/key are inavlid or company_name is not provided
+
+    + Attributes
+        + code: 401 (number)
+        + message:  Access denied for ...
+        + status: fail (string)
+
 # Data Structures
 
 ## Lead (object)
@@ -233,6 +285,18 @@ Processes payment and creates a new order and other related entities.
 ## Referral
 + type_id: 10 (number, required) - Id of referral type
 + name: norma@jean.com (string) - Identifier of referral. Can be name, email or url. With referral_type_id = 10 use email of a referral sales person
+
+## Credit card number (object)
+
++ `card_number`: `Kw3JZlXwcmJNfmRdRnHfEuDAOQKWtXbg50IvtJuNASsDgsO2ZWpVNi5fhG9A6NOSoy98NSozlICnCUS3WqWOjw==` (string, required) - Credit card number encrypted with a public key and then base 64 encoded. You can use openssl_public_encrypt and base64_encode PHP functions. Please take in account than request should be url ecnoded.
+
+## Credit card basics (Credit card number)
++ firstname:  Bruce (string, required) - Firstname of a cardholder
++ lastname: Wayne (string, required) - Lastname of a cardholder
++ expiration_month: 07 (number, required) - Expiration month
++ expiration_year: 2020 (number, required) - Expiration year
++ cvv: 777 (number, required) - CVV number
+
 
 ## Payment
 + payment_firstname:  Bruce (string, required) - Firstname of a cardholder
