@@ -315,7 +315,7 @@ therefore can link lead any existing company.
         + message:  Access denied for ...
         + status: fail (string)
 
-## Create a trial order [/api/?action=check_credit_card_for_trial]
+## Create a trial order [/api/?action=trial]
 
 ### Trial Order Data [POST]
 
