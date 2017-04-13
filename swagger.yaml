@@ -329,7 +329,7 @@ In case if lead exists and doesn't have status 'Converted' the leads status will
 
     + Attributes
         + services (array[Sku], required)
-        + customer (Customer, required) - Customer information
+        + customer (Customer for trial, required) - Customer information
         + payment (Payment, required) - Payment (Credit card) information
         + company_name: polish tv company (required) - Name of the company to associate lead with. Required in case if the requester (API client) is not associated to any company. The field is case insensitive.
 
@@ -432,6 +432,9 @@ In case if lead exists and doesn't have status 'Converted' the leads status will
 + phone: 7854087499
 + referral: `Internet:google.com` - Referral in format Medium:SourceName.
 + addresses (array[Address]) - List of address object which are associated to a customer object
+
+## Customer for trial (Customer)
++ password_hash: (required)
 
 ## Order
 + order_id: 1 (number) - Number of the order in your system
