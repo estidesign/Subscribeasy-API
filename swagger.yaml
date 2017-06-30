@@ -192,6 +192,7 @@ Processes payment and creates a new order and other related entities.
         + products (array[Product], required) - Array of products to process in order
         + customer (Customer, required) - Customer information
         + order (Order, required) - Order, payment and shipping information
+        + preprocessed_payment_data (Processed Payment) - Fill this parameter if you need to create an order with already processed payment
 
 + Response 200
 
@@ -385,7 +386,6 @@ In case if lead exists and doesn't have status 'Converted' the leads status will
 + name: norma@jean.com (string) - Identifier of referral. Can be name, email or url. With referral_type_id = 10 use email of a referral sales person
 
 ## Credit card number (object)
-
 + `card_number`: `Kw3JZlXwcmJNfmRdRnHfEuDAOQKWtXbg50IvtJuNASsDgsO2ZWpVNi5fhG9A6NOSoy98NSozlICnCUS3WqWOjw==` (string, required) - Credit card number encrypted with a public key and then base 64 encoded. You can use openssl_public_encrypt and base64_encode PHP functions. Please take in account than request should be url ecnoded.
 
 ## Credit card basics (Credit card number)
@@ -404,6 +404,13 @@ In case if lead exists and doesn't have status 'Converted' the leads status will
 + expDateMonth: 07 (number, required) - Expiration month
 + expDateYear: 2020 (number, required) - Expiration year
 + cvv2Number: 777 (number, required) - CVV number
+
+
+
+## Processed Payment
+- gateway_id: `vQqBqFmpq8KJlIMJ` (string, required) - ID of gateway that processed payment
+- charge_id: `ch1AaGNcEuNAfWj71itfGbkcia` (string, required) - ID of charge (transaction ID) obtained from payment gateway
+
 
 
 ## Product
