@@ -213,7 +213,6 @@ Processes payment and creates a new order and other related entities.
         + message: Order was not created: reason (string)
         + status: fail (string)
 
-
 ## Validate a credit card  [/api/?action=validate_credit_card]
 
 ### Credit card [POST]
@@ -505,6 +504,106 @@ may vary depeding on payment gateway
                 },
                 "status": "success"
             }
+
+## List adresses [/api/?action=list_address]
+### List of customer's addresses [POST]
+
+Returns list of addresses that belong to a particular customer
+
++ Request
+
+    + Attributes
+        + Customer
+            + email: george@orwell.com (required) - Email of a customer
+
+        
+    + Headers
+            Store-Url: http://test.polskafirmatv.com/
+            Key: mzDUac9KpPvRVNHL
+            
+            
+    + Body
+        {
+          "customer": {
+            "email": "george@orwell.com"
+        }
+
+    
++ Response 400
+    + Body
+        {
+            "list_address": [
+                {
+                    "address_id": 4,
+                    "customer_id": 4,
+                    "lead_id": null,
+                    "company": "",
+                    "firstname": "George",
+                    "lastname": "Orwell",
+                    "address_1": "50 Ave B",
+                    "address_2": "",
+                    "postcode": "10009",
+                    "city": "New York",
+                    "country_id": 223,
+                    "zone_id": 3655,
+                    "user_id": 0,
+                    "removable": true,
+                    "country": {
+                        "country_id": 223,
+                        "name": "United States",
+                        "iso_code_2": "US"
+                    },
+                    "zone": {
+                        "zone_id": 3655,
+                        "name": "New York"
+                    }
+                }
+            ],
+            "default_address_id": 4,
+            "status": "success"
+        }
+        
+## List credit cards [/api/?action=list_credit_card]
+### List of customer's credit cards [POST]
+
+Returns list of cards that belong to a particular customer
+
++ Request
+
+    + Attributes
+        + Customer
+            + email: george@orwell.com (required) - Email of a customer
+
+        
+    + Headers
+            Store-Url: http://test.polskafirmatv.com/
+            Key: mzDUac9KpPvRVNHL
+            
+            
+    + Body
+        {
+          "customer": {
+            "email": "george@orwell.com"
+        }
+
+    
++ Response 400
+    + Body
+        {
+            "cc_list": [
+                {
+                    "id": 767,
+                    "number": "xxxxxxxxxxxx9221",
+                    "card_type": "visa",
+                    "expire_month": "3",
+                    "expire_year": "2021",
+                    "address_id": null
+                }
+            ],
+            "status": "success"
+        }
+        
+
 
 
 # Data Structures
