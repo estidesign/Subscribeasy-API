@@ -79,6 +79,7 @@ required.
         + status: fail (string)
         
         
+
 ## Create a new lead  [/api/?action=lead]
 
 ### New lead [POST]
@@ -257,12 +258,71 @@ therefore can link lead any existing company.
         
 + Response 401
 
-    Invalid credentials. Will occur in case when store_url/key are inavlid or company_name is not provided
+    Invalid credentials. Will occur in case when `store_url/key` are inavlid or company_name is not provided
 
     + Attributes
         + code: 401 (number)
         + message:  Access denied for ...
         + status: fail (string)
+        
+        
+## Credit Card [/api/credit_cards/{credit_card_id}]
++ Parameters
+    + `credit_card_id` (number) - Id of existing credit card. Can be obtained from `list_credit_card` API
+
+### Update a credit card [POST]
+
+You can update address and state of a card and also disable or enable it. Provide auth information in 
+headers **Store_Url** and **Key**. Keep in mind that at least one post paramether should be provided.
+
++ Request (application/json)
+
+    + Attributes
+        + `address_id`: 8 (number) - `address_id` refers to the ID of the 
+        address record which can be obtained from `list_address` API.
+        + state: enabled (string) - State of a card. Accepts either **enabled** or **disabled** strings.
+        If a card is linked to an active autopayment (recurring profile) than it can not be disabled.
+        + label: My Visa (string)
+        
+    + Headers
+    
+            Key: mzDUac9KpPvRVNHL
+            Store-Url: http://test.polskafirmatv.com/
+    + Body
+        {
+            "address_id": 952,
+            "state": "disabled",
+        }
+        
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "data": {
+                    "id": 952,
+                    "label": "",
+                    "card_type": "visa",
+                    "number": "xxxxxxxxxxxx4241",
+                    "expire_month": "1",
+                    "expire_year": "2023",
+                    "address_id": null,
+                    "state": "disabled"
+                },
+                "message": "Card was successfully updated",
+                "status": "success"
+            }
+    
++ Response 400 (application/json)
+
+    + Body        
+        {
+            "status": "fail",
+            "code": 400,
+            "message": "Field validation failed: Card can not be disabled because it is linked to active AutoPayment profile."
+        }
+
 
 ## Check if credit card can be used for trial [/api/?action=check_credit_card_for_trial]
 
@@ -362,6 +422,91 @@ In case if lead exists and doesn't have status 'Converted' the leads status will
         + message:  Access denied for ...
         + status: fail (string)
 
+
+## Customer [/api/customers/{customer_email}]
++ Parameters
+    + customer_email (email) - Email of an existing customer
+
+### Update a customer [POST]
+You can update basic info like **firstname**, 
+**lastename**, **email**, **telephone** and **parental password** for subscriptions. 
+This action takes a JSON payload as part of the request. Provide auth information in headers **Store_Url** and **Key**
+Response then return specific header and body.
+Keep in mind that at list one post paramether should be provided.
+
++ Request (application/json)
+
+    + Headers
+    
+            Key: mzDUac9KpPvRVNHL
+            Store-Url: http://test.polskafirmatv.com/
+    + Body
+        {
+            "email": "oliver@stone.com",
+            "firstname": "Oliver",
+            "lastname": "Stone"
+            "telephone": "9179121000" 
+            "parental_password": 2
+        }
+        
++ Attributes (Customer for update)
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "data": {
+                    "firstname": "Oliver",
+                    "lastname": "Stone",
+                    "email": "oliver@stone.com",
+                    "telephone": "9179121000",
+                    "telephone2": ""
+                },
+            "message": "Parental password was updated for all subscriptions",
+            "status": "success"
+}
+
+## Get customer's payment gateway info [/api/customers/{customer_email}/gateway_info]
+
++ Parameters
+    + customer_email (email) - Email of an existing customer
+
+### Get customer's payment gateway info [GET]
+Returns information about payment gateway that should be used when processing paments for this customer.
+Response may very depending on gateway type (Stripe, Paypal).
+Accuared information may can be used in **import** API for processin of prepaid orders. Provide auth information in headers **Store_Url** and **Key**
+Response then return specific header and body.
+
+
++ Attributes
+    + id: FhfvDIzvHHPchpwg (string) - Id of payment gateway
+    + gateway_name: stripe (string)
+    + auth_info (array) - Information required for processing of a payment. Contents of this parameter 
+may vary depeding on payment gateway
+
++ Request 
+    + Headers
+    
+            Key: mzDUac9KpPvRVNHL
+            Store-Url: http://test.polskafirmatv.com/
+            
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "data": {
+                    "id": "FhfvDIzvHHPchpwg",
+                    "gateway_name": "stripe",
+                    "auth_info": {
+                        "public_key": "pk_test_dANAk9xwEoG0IXuOOKynNRdv"
+                    }
+                },
+                "status": "success"
+            }
+
+
 # Data Structures
 
 ## Lead (object)
@@ -440,8 +585,17 @@ In case if lead exists and doesn't have status 'Converted' the leads status will
 + referral: `Internet:google.com` - Referral in format Medium:SourceName.
 + addresses (array[Address]) - List of address object which are associated to a customer object
 
+
+## Customer for update
++ firstname: Olivia
++ lastname: Wilde
++ email: olivia@wilde.com
++ telephone: 7854087499
++ parentall_password: 7 - Password that will be assigned to customer's subscriptions
+
+
 ## Customer for trial (Customer)
-+ password_hash: (required)
++ password_hash (required)
 
 ## Order
 + order_id: 1 (number) - Number of the order in your system
