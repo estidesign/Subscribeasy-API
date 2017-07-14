@@ -67,7 +67,7 @@ required.
         + code: 109 (number)
         + message: Lead was successfully saved (string)
         + type: success (string)
-        + leads: (array[Lead for leads list]) - Array of leads
+        + leads (array[Lead for leads list]) - Array of leads
     
 + Response 401
 
@@ -287,11 +287,14 @@ headers **Store_Url** and **Key**. Keep in mind that at least one post paramethe
     
             Key: mzDUac9KpPvRVNHL
             Store-Url: http://test.polskafirmatv.com/
+            
+            
     + Body
-        {
-            "address_id": 952,
-            "state": "disabled",
-        }
+    
+            {
+                "address_id": 952,
+                "state": "disabled",
+            }
         
 
 + Response 200 (application/json)
@@ -316,11 +319,12 @@ headers **Store_Url** and **Key**. Keep in mind that at least one post paramethe
 + Response 400 (application/json)
 
     + Body        
-        {
-            "status": "fail",
-            "code": 400,
-            "message": "Field validation failed: Card can not be disabled because it is linked to active AutoPayment profile."
-        }
+    
+            {
+                "status": "fail",
+                "code": 400,
+                "message": "Field validation failed: Card can not be disabled because it is linked to active AutoPayment profile."
+            }
 
 
 ## Check if credit card can be used for trial [/api/?action=check_credit_card_for_trial]
@@ -429,8 +433,7 @@ In case if lead exists and doesn't have status 'Converted' the leads status will
 ### Update a customer [POST]
 You can update basic info like **firstname**, 
 **lastename**, **email**, **telephone** and **parental password** for subscriptions. 
-This action takes a JSON payload as part of the request. Provide auth information in headers **Store_Url** and **Key**
-Response then return specific header and body.
+Provide auth information in headers **Store_Url** and **Key**
 Keep in mind that at list one post paramether should be provided.
 
 + Request (application/json)
@@ -440,13 +443,14 @@ Keep in mind that at list one post paramether should be provided.
             Key: mzDUac9KpPvRVNHL
             Store-Url: http://test.polskafirmatv.com/
     + Body
-        {
-            "email": "oliver@stone.com",
-            "firstname": "Oliver",
-            "lastname": "Stone"
-            "telephone": "9179121000" 
-            "parental_password": 2
-        }
+    
+            {
+                "email": "oliver@stone.com",
+                "firstname": "Oliver",
+                "lastname": "Stone"
+                "telephone": "9179121000" 
+                "parental_password": 2
+            }
         
 + Attributes (Customer for update)
 
@@ -462,9 +466,9 @@ Keep in mind that at list one post paramether should be provided.
                     "telephone": "9179121000",
                     "telephone2": ""
                 },
-            "message": "Parental password was updated for all subscriptions",
-            "status": "success"
-}
+                "message": "Parental password was updated for all subscriptions",
+                "status": "success"
+            }
 
 ## Get customer's payment gateway info [/api/customers/{customer_email}/gateway_info]
 
@@ -518,50 +522,53 @@ Returns list of addresses that belong to a particular customer
 
         
     + Headers
+    
             Store-Url: http://test.polskafirmatv.com/
             Key: mzDUac9KpPvRVNHL
             
             
     + Body
-        {
-          "customer": {
-            "email": "george@orwell.com"
-        }
+    
+            {
+              "customer": {
+                "email": "george@orwell.com"
+            }
 
     
 + Response 400
     + Body
-        {
-            "list_address": [
-                {
-                    "address_id": 4,
-                    "customer_id": 4,
-                    "lead_id": null,
-                    "company": "",
-                    "firstname": "George",
-                    "lastname": "Orwell",
-                    "address_1": "50 Ave B",
-                    "address_2": "",
-                    "postcode": "10009",
-                    "city": "New York",
-                    "country_id": 223,
-                    "zone_id": 3655,
-                    "user_id": 0,
-                    "removable": true,
-                    "country": {
+    
+            {
+                "list_address": [
+                    {
+                        "address_id": 4,
+                        "customer_id": 4,
+                        "lead_id": null,
+                        "company": "",
+                        "firstname": "George",
+                        "lastname": "Orwell",
+                        "address_1": "50 Ave B",
+                        "address_2": "",
+                        "postcode": "10009",
+                        "city": "New York",
                         "country_id": 223,
-                        "name": "United States",
-                        "iso_code_2": "US"
-                    },
-                    "zone": {
                         "zone_id": 3655,
-                        "name": "New York"
+                        "user_id": 0,
+                        "removable": true,
+                        "country": {
+                            "country_id": 223,
+                            "name": "United States",
+                            "iso_code_2": "US"
+                        },
+                        "zone": {
+                            "zone_id": 3655,
+                            "name": "New York"
+                        }
                     }
-                }
-            ],
-            "default_address_id": 4,
-            "status": "success"
-        }
+                ],
+                "default_address_id": 4,
+                "status": "success"
+            }
         
 ## List credit cards [/api/?action=list_credit_card]
 ### List of customer's credit cards [POST]
@@ -576,35 +583,138 @@ Returns list of cards that belong to a particular customer
 
         
     + Headers
+    
             Store-Url: http://test.polskafirmatv.com/
             Key: mzDUac9KpPvRVNHL
             
             
     + Body
-        {
-          "customer": {
-            "email": "george@orwell.com"
-        }
+    
+            {
+              "customer": {
+                "email": "george@orwell.com"
+            }
 
     
 + Response 400
     + Body
-        {
-            "cc_list": [
-                {
-                    "id": 767,
-                    "number": "xxxxxxxxxxxx9221",
-                    "card_type": "visa",
-                    "expire_month": "3",
-                    "expire_year": "2021",
-                    "address_id": null
-                }
-            ],
-            "status": "success"
-        }
+    
+            {
+                "cc_list": [
+                    {
+                        "id": 767,
+                        "number": "xxxxxxxxxxxx9221",
+                        "card_type": "visa",
+                        "expire_month": "3",
+                        "expire_year": "2021",
+                        "address_id": null
+                    }
+                ],
+                "status": "success"
+            }
         
 
+## Address [/api/addresses/{address_id}]
++ Parameters
+    + address_id (number) - Can be retrieved from List adresses API
 
+### Update an address [POST]
+You can update basic info like **firstname**, 
+**lastename**, **email**, **telephone** and **parental password** for subscriptions. 
+Provide auth information in headers **Store_Url** and **Key**
+Keep in mind that at list one post paramether should be provided.
+
++ Request (application/json)
+
+    + Attributes
+        + firstname
+        + lastname
+        + company - Company name
+        + address_1
+        + address_2
+        + city: Brooklyn (required)
+        + postcode: 11235 (required) - Zip code of an address
+        + zone: NY (string) - State or geo zone code
+        + country: US (required) -  2 letter country code. A2 ISO standart
+        
+    + Headers
+    
+            Key: mzDUac9KpPvRVNHL
+            Store-Url: http://test.polskafirmatv.com/
+        
+    + Body
+    
+            {
+                "country": "US",
+                "company": "Naughty Dog",
+                "firstname": "Neil",
+                "lastname": "Druckman",
+                "address_1": "2425 Olympic Blvd",
+                "postcode": "90404",
+                "city": "Santa Monica",
+                "zone": "CA"
+            }
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "data": {
+                    "address_id": 1325,
+                    "company": "Naughty Dog",
+                    "firstname": "Neil",
+                    "lastname": "Druckman",
+                    "address_1": "2425 Olympic Blvd",
+                    "address_2": "",
+                    "postcode": "90404",
+                    "city": "Santa Monica",
+                    "removable": trueD,
+                    "country": {
+                        "country_id": 223,
+                        "name": "United States",
+                        "iso_code_2": "US"
+                    },
+                    "zone": {
+                        "zone_id": 3624,
+                        "code": "CA",
+                        "name": "California"
+                    }
+                },
+                "message": "Address was updated",
+                "status": "success"
+            }
+        
+### Delete [DELETE]
+
+Deletes an address with provided id. Address can not be deleted if it's linked to autopayment (recurring profile)
+
++ Request
+
+    + Headers
+    
+            Key: mzDUac9KpPvRVNHL
+            Store-Url: http://test.polskafirmatv.com/
+        
+
++ Response 200
+
+    + Body
+    
+            {
+                "message": "Address \"Neil Druckman, Naughty Dog, 2425 Olympic Blvd, 90404, Santa Monica, California, United States\" was removed",
+                "status": "success"
+            }
+            
++ Response 400
+
+    + Body
+    
+            {
+                "status": "fail",
+                "code": 400,
+                "message": "Field validation failed: This address can not be removed"
+            }
 
 # Data Structures
 
