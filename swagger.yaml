@@ -279,7 +279,7 @@ headers **Store_Url** and **Key**. Keep in mind that at least one post paramethe
     + Attributes
         + `address_id`: 8 (number) - `address_id` refers to the ID of the 
         address record which can be obtained from `list_address` API.
-        + state: enabled (string) - State of a card. Accepts either **enabled** or **disabled** strings.
+        + state: enabled (string) - State of a card. Accepts  **enabled**, **archived** or **disabled** strings.
         If a card is linked to an active autopayment (recurring profile) than it can not be disabled.
         + label: My Visa (string)
         
@@ -508,7 +508,75 @@ may vary depeding on payment gateway
                 },
                 "status": "success"
             }
+            
+            
 
+## Get customer's notifications [/api/customers/{customer_email}/notifications(?{created_at},{notification_type_id},{page})]
+
++ Parameters
+    + customer_email (email, required) - Email of an existing customer.
+    + created_at (string, `2015-10-25 20:00:00`) ... Timestamp in format: `YYYY-MM-DD HH:MM:SS`. May be used with conjuction with `before` and `after` operators.
+        F.e.: `created_at[after]=2015-10-25 20:00:00`
+    + notification_type_id (string, `subscription_will_expire_in_3_days`) ... ID of notification type. All available notification types can be located through [List of notification types API](https://subscribeasyapi.docs.apiary.io/reference/0/list-of-notification-types/get-list-of-notification-types).
+        You can list multipe type IDs separating them with comma: `notification_type_id=payment_for_subscription_was_received,credit_card_will_expire_in_3_month`
+    + page (string, `1`)
+
+
+### Get customer's notifications [GET]
+Returns list of notifications related to a customer. Datetime and notification filters can be applied.
+
+
++ Attributes
+    + id: 1 (string) - ID of notification
+    + created_at: `2015-10-25 20:00:00` (string) - Datetime of notification
+    + message: `Polska TV Premium 2 subscription will expire on 05/12/2018` (string) - Notification message
+    + notification_type: (object) - Object containing id and description of notification type
+        - id: `subscription_will_expire_in_3_days` (string) - Id 
+        - name: `Subscription will expire in 3 days` (string) - Description
+
++ Request 
+    + Headers
+    
+            Key: mzDUac9KpPvRVNHL
+            Store-Url: http://test.polskafirmatv.com/
+            
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "data": [
+                    {
+                        "id": "42922",
+                        "created_at": "2018-05-09 17:02:44",
+                        "message": "Polska TV Premium 2 subscription will expire on 05/12/2018",
+                        "notification_type": {
+                            "data": {
+                                "id": "auto_payment_for_subscription_was_received",
+                                "name": "Auto payment for subscription was received"
+                            }
+                        }
+                    }
+                ],
+                "meta": {
+                    "links": [
+                        {
+                            "rel": "notification_types",
+                            "uri": "/api/notification_types"
+                        }
+                    ],
+                    "pagination": {
+                        "total": 1,
+                        "count": 1,
+                        "per_page": 20,
+                        "current_page": 1,
+                        "total_pages": 1,
+                        "links": []
+                    }
+                },
+                "status": "success"
+            }
+            
 ## List adresses [/api/?action=list_address]
 ### List of customer's addresses [POST]
 
@@ -687,7 +755,7 @@ Keep in mind that at list one post paramether should be provided.
         
 ### Delete [DELETE]
 
-Deletes an address with provided id. Address can not be deleted if it's linked to autopayment (recurring profile)
+Deletes an address with provided id. Address can not be deleted if it's a customer's primary address and if it's linked to non-archived credit card
 
 + Request
 
@@ -715,6 +783,47 @@ Deletes an address with provided id. Address can not be deleted if it's linked t
                 "code": 400,
                 "message": "Field validation failed: This address can not be removed"
             }
+
+
+
+## List of notification types [/api/notification_types]
+
+### Get list of notification types [GET]
+Returns all available types of notifications
++ Response 200
+
+    + Body
+    
+            {
+                "data": [
+                    {
+                        "id": "subscription_will_expire_in_3_days",
+                        "name": "Subscription will expire in 3 days"
+                    },
+                    {
+                        "id": "subscription_expired",
+                        "name": "Subscription expired"
+                    },
+                    {
+                        "id": "credit_card_expired",
+                        "name": "Credit card expired"
+                    },
+                    {
+                        "id": "credit_card_will_expire_in_3_month",
+                        "name": "Credit card will expire in 3 month"
+                    },
+                    {
+                        "id": "payment_for_subscription_was_received",
+                        "name": "Payment for subscription was received"
+                    },
+                    {
+                        "id": "auto_payment_for_subscription_was_received",
+                        "name": "Auto payment for subscription was received"
+                    }
+                ],
+                "status": "success"
+            }
+            
 
 # Data Structures
 
